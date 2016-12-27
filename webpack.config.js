@@ -7,8 +7,12 @@ const path = require('path');
 
 module.exports = {
   devtool: debug ? 'inline-sourcemap' : null,
-  entry: path.join(__dirname, 'src', 'app-client.js'),
+  entry: [
+    'webpack-hot-middleware/client',  
+    path.join(__dirname, 'src', 'app-client.js')
+  ],
   devServer: {
+    hot: true,
     inline: true,
     port: 3333,
     contentBase: "src/static/",
@@ -24,19 +28,17 @@ module.exports = {
   module: {
     loaders: [{
       test: path.join(__dirname, 'src'),
-      loader: ['babel-loader'],
-      query: {
-        cacheDirectory: 'babel_cache',
-        presets: debug ? ['react', 'es2015', 'react-hmre'] : ['react', 'es2015']
-      }
+      loaders: ['react-hot', 'babel?presets[]=es2015,presets[]=react']
     }]
   },
-  plugins: debug ? [] : [
+  plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: { warnings: false },
       mangle: true,

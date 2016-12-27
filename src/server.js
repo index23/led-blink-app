@@ -9,11 +9,31 @@ import { match, RouterContext } from 'react-router';
 import routes from './routes';
 import NotFoundPage from './components/NotFoundPage';
 
+var config = require('../webpack.config.js');
+var webpack = require('webpack');
+var webpackDevMiddleware = require('webpack-dev-middleware');
+var webpackHotMiddleware = require('webpack-hot-middleware');
+
+//import webpack from 'webpack';
+//import webpackDevMiddleware from 'webpack-dev-middleware';
+//import webpackHotMiddlewar from 'webpack-hot-middleware';
+
+var compiler = webpack(config);
+
 // initialize the server and configure support for ejs templates
 const app = new Express();
 const server = new Server(app);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+app.use(webpackDevMiddleware(compiler, {
+    publicPath: config.output.publicPath,
+    hot: true,
+    inline: true,
+    stats: { colors: true }
+}));
+
+app.use(webpackHotMiddleware(compiler));
 
 // define the folder that will be used for static assets
 app.use(Express.static(path.join(__dirname, 'static')));
@@ -53,7 +73,7 @@ app.get('*', (req, res) => {
 
 // start the server
 const port = process.env.PORT || 3000;
-const env = process.env.NODE_ENV || 'production';
+const env = process.env.NODE_ENV || 'development';
 server.listen(port, err => {
   if (err) {
     return console.error(err);
