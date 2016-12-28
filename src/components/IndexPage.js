@@ -1,8 +1,9 @@
-'use strict';
+  'use strict';
 
 import React from 'react';
 import AthletePreview from './AthletePreview';
 import athletes from '../data/athletes';
+import Button from './Button';
 
 export default class IndexPage extends React.Component {
   render() {
@@ -10,6 +11,9 @@ export default class IndexPage extends React.Component {
       <div className="home">
         <div className="athletes-selector">
           {athletes.map(athleteData => <AthletePreview key={athleteData.id} {...athleteData} />)}
+        </div>
+        <div className="myButton">
+          <Button/>
         </div>
       </div>
     );
