@@ -38,8 +38,13 @@ app.use(webpackHotMiddleware(compiler));
 // define the folder that will be used for static assets
 app.use(Express.static(path.join(__dirname, 'static')));
 
+app.get('/service/blink', (req, res) => {
+    console.log('primljeno');
+});
+
 // universal routing and rendering
 app.get('*', (req, res) => {
+  console.log(req.url);
   match(
     { routes, location: req.url },
     (err, redirectLocation, renderProps) => {
